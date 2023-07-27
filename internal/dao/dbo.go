@@ -34,3 +34,11 @@ func CreateUser(user *model.User) error {
 	log.Infof("insert success")
 	return nil
 }
+func UpLoadVideo(video *model.Video) error {
+	if err := utils.GetDB().Model(&model.Video{}).Create(video).Error; err != nil {
+		log.Errorf("CreatVideo err,the err is %s", err)
+		return fmt.Errorf("CreatVideo err,the err is %s", err)
+	}
+	log.Infof("Upload success")
+	return nil
+}

@@ -8,7 +8,7 @@ app:
   run_mode: release # 可选dev、release模式
 
 db:
-  host: "192.168.168.128"     # host
+  host: "192.168.1.128"     # host
   port: 8086          # port
   user: "root"        # user
   password: "123456"  # password
@@ -18,7 +18,7 @@ db:
   max_idle_time: 300  # 最大空闲时间
 
 redis:
-  rhost: "192.168.168.128"
+  rhost: "192.168.1.128"
   rport: 8089
   rdb: 0
   passwd: ''

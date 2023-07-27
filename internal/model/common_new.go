@@ -9,7 +9,7 @@ type Response struct {
 
 type Video struct {
 	Id            int64     `json:"id,omitempty" gorm:"column:id;primaryKey"`
-	Author        User      `json:"author" gorm:"embedded"`
+	UserID        int64     `json:"user_id" gorm:"column:user_id;foreignKey"`
 	PlayUrl       string    `json:"play_url" gorm:"column:play_url"`
 	CoverUrl      string    `json:"cover_url,omitempty" gorm:"column:cover_url"`
 	FavoriteCount int64     `json:"favorite_count,omitempty" gorm:"column:favorite_count"`
@@ -17,6 +17,7 @@ type Video struct {
 	IsFavorite    bool      `json:"is_favorite,omitempty" gorm:"column:is_favorite"`
 	CreatedAt     time.Time `json:"-" gorm:"column:created_at;index"`
 	UpdatedAt     time.Time `json:"-" gorm:"column:updated_at"`
+	uuid          string    `gorm:"column:uuid"`
 }
 
 type Comment struct {

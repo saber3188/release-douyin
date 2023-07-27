@@ -1,10 +1,11 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/RaymondCode/simple-demo/internal/cache"
+	"github.com/RaymondCode/simple-demo/internal/dao"
 	"github.com/RaymondCode/simple-demo/internal/model"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"path/filepath"
@@ -20,6 +21,7 @@ func Publish(c *gin.Context) {
 	token := c.PostForm("token")
 	user, _ := cache.GetTokenInfo(token)
 	if user == nil {
+		log.Errorf("Publish :user not exist")
 		c.JSON(http.StatusOK, model.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
@@ -32,9 +34,8 @@ func Publish(c *gin.Context) {
 		log.Errorf("uploaded failed,the err is %s", err)
 		return
 	}
-	log.Infof("save failed,the err is %s", err)
-	filename := filepath.Base(data.Filename)
-	finalName := fmt.Sprintf("%d_%s", user.Id, filename)
+	log.Infof("upload success")
+	finalName := uuid.New().String()
 	saveFile := filepath.Join("./public/", finalName)
 	if err := c.SaveUploadedFile(data, saveFile); err != nil {
 		c.JSON(http.StatusOK, model.Response{
@@ -44,7 +45,18 @@ func Publish(c *gin.Context) {
 		log.Errorf("save failed,the err is %s", err)
 		return
 	}
-
+	video := &model.Video{
+		UserID:  user.Id,
+		PlayUrl: finalName,
+	}
+	if err = dao.UpLoadVideo(video); err != nil {
+		log.Errorf("upload err,the err is %s", err)
+		c.JSON(http.StatusOK, model.Response{
+			StatusCode: 1,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
 	c.JSON(http.StatusOK, model.Response{
 		StatusCode: 0,
 		StatusMsg:  finalName + " uploaded successfully",
