@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"path/filepath"
 )
@@ -27,9 +28,10 @@ func Publish(c *gin.Context) {
 			StatusCode: 1,
 			StatusMsg:  err.Error(),
 		})
+		log.Errorf("uploaded failed,the err is %s", err)
 		return
 	}
-
+	log.Infof("save failed,the err is %s", err)
 	filename := filepath.Base(data.Filename)
 	user := usersLoginInfo[token]
 	finalName := fmt.Sprintf("%d_%s", user.Id, filename)
@@ -39,6 +41,7 @@ func Publish(c *gin.Context) {
 			StatusCode: 1,
 			StatusMsg:  err.Error(),
 		})
+		log.Errorf("save failed,the err is %s", err)
 		return
 	}
 
@@ -46,6 +49,7 @@ func Publish(c *gin.Context) {
 		StatusCode: 0,
 		StatusMsg:  finalName + " uploaded successfully",
 	})
+	log.Infof("save successfully ,the path is %s", finalName)
 }
 
 // PublishList all users have same publish video list
