@@ -23,6 +23,7 @@ func GetUserByName(name string) (*model.User, error) {
 		log.Errorf("GetUserByName fail:%v", err)
 		return nil, fmt.Errorf("GetUserByName fail:%v", err)
 	}
+	log.Info("GetUser Success")
 	return user, nil
 }
 func CreateUser(user *model.User) error {

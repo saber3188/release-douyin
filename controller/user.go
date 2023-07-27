@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/RaymondCode/simple-demo/internal/cache"
 	"github.com/RaymondCode/simple-demo/internal/dao"
 	"github.com/RaymondCode/simple-demo/internal/model"
 	"github.com/gin-gonic/gin"
@@ -81,31 +82,59 @@ func Login(c *gin.Context) {
 	password := c.Query("password")
 
 	token := username + password
-
-	if user, exist := usersLoginInfo[token]; exist {
+	user, err := dao.GetUserByName(username)
+	if err != nil {
+		log.Errorf("Login:GetUserByName err,the err is %s", err)
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: model.Response{StatusCode: 0},
-			UserId:   user.Id,
-			Token:    token,
+			Response: model.Response{StatusCode: 1, StatusMsg: err.Error()},
 		})
-	} else {
+		return
+	}
+	if user == nil {
+		log.Errorf("user doesn't exist")
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: model.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
 		})
+		return
+	}
+	if user.Token != token {
+		log.Errorf("password error")
+		c.JSON(http.StatusOK, UserLoginResponse{
+			Response: model.Response{StatusCode: 1, StatusMsg: "password error"},
+		})
+		return
+	}
+	log.Info("Login success")
+	c.JSON(http.StatusOK, UserLoginResponse{
+		Response: model.Response{StatusCode: 0},
+		UserId:   user.Id,
+		Token:    token,
+	})
+	if err = cache.SetTokenInfo(user, token); err != nil {
+		log.Errorf("setToken err ,the err is %s", err)
 	}
 }
 
 func UserInfo(c *gin.Context) {
 	token := c.Query("token")
-
-	if user, exist := usersLoginInfo[token]; exist {
+	user, err := cache.GetTokenInfo(token)
+	if err != nil {
+		log.Errorf("GetToken err,The err is %s", err)
 		c.JSON(http.StatusOK, UserResponse{
-			Response: model.Response{StatusCode: 0},
-			User:     user,
+			Response: model.Response{StatusCode: 1, StatusMsg: err.Error()},
 		})
-	} else {
+		return
+	}
+	if user == nil {
+		log.Errorf("User doesn't exist")
 		c.JSON(http.StatusOK, UserResponse{
 			Response: model.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
 		})
+		return
 	}
+	log.Info("User Info success")
+	c.JSON(http.StatusOK, UserResponse{
+		Response: model.Response{StatusCode: 0},
+		User:     *user,
+	})
 }
