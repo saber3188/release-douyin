@@ -20,3 +20,6 @@ func Md5String(s string) string {
 func GenerateSession(userName string) string {
 	return Md5String(fmt.Sprintf("%s:%s", userName, "session"))
 }
+func StatCharge() {
+
+}

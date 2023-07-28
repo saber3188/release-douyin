@@ -6,6 +6,7 @@ import (
 	"github.com/RaymondCode/simple-demo/utils"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
+	"time"
 )
 
 // GetUserByName 根据姓名获取用户
@@ -41,4 +42,14 @@ func UpLoadVideo(video *model.Video) error {
 	}
 	log.Infof("Upload success")
 	return nil
+}
+func GetVediosByTime(lastTime time.Time) ([]model.Video, int64, error) {
+	var videoList []model.Video
+	var count int64
+	if err := utils.GetDB().Model(&model.Video{}).Order("created_at DESC").Where("created_at<?", lastTime).Find(&videoList).Limit(30).Count(&count).Error; err != nil {
+		log.Errorf("GetVedio err,the err is %s", err)
+		return nil, 0, err
+	}
+	log.Info("the count is", count)
+	return videoList, count, nil
 }

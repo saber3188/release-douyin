@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"database/sql/driver"
+	"encoding/json"
+	"time"
+)
 
 type Response struct {
 	StatusCode int32  `json:"status_code" gorm:"-"`
@@ -8,8 +12,10 @@ type Response struct {
 }
 
 type Video struct {
-	Id            int64     `json:"id,omitempty" gorm:"column:id;primaryKey"`
-	UserID        int64     `json:"user_id" gorm:"column:user_id;foreignKey"`
+	Id int64 `json:"id,omitempty" gorm:"column:id;primaryKey"`
+	//UserId        int64     `json:"user_id" gorm:"column:user_id"`
+	User          User      `json:"user" gorm:"column:user"`
+	Title         string    `json:"title" gorm:"column:title"`
 	PlayUrl       string    `json:"play_url" gorm:"column:play_url"`
 	CoverUrl      string    `json:"cover_url,omitempty" gorm:"column:cover_url"`
 	FavoriteCount int64     `json:"favorite_count,omitempty" gorm:"column:favorite_count"`
@@ -17,7 +23,6 @@ type Video struct {
 	IsFavorite    bool      `json:"is_favorite,omitempty" gorm:"column:is_favorite"`
 	CreatedAt     time.Time `json:"-" gorm:"column:created_at;index"`
 	UpdatedAt     time.Time `json:"-" gorm:"column:updated_at"`
-	uuid          string    `gorm:"column:uuid"`
 }
 
 type Comment struct {
@@ -62,4 +67,20 @@ type MessagePushEvent struct {
 	MsgContent string    `json:"msg_content,omitempty" gorm:"column:msg_content"`
 	CreatedAt  time.Time `json:"-" gorm:"column:created_at"`
 	UpdatedAt  time.Time `json:"-" gorm:"column:updated_at"`
+}
+
+func (u User) Value() (driver.Value, error) {
+	// 这里我们将整个结构体转换成 JSON 格式存入数据库
+	// 可根据需要进行其他格式的转换
+	return json.Marshal(u)
+}
+
+// Scan 实现 sql.Scanner 接口，将数据库的值转换回结构体字段
+func (u *User) Scan(value interface{}) error {
+	// 这里我们从数据库中取出的值是 JSON 格式的数据
+	// 将其解析并存入结构体字段
+	if value == nil {
+		return nil
+	}
+	return json.Unmarshal(value.([]byte), &u)
 }
