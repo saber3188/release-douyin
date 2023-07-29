@@ -53,3 +53,11 @@ func GetVediosByTime(lastTime time.Time) ([]model.Video, int64, error) {
 	log.Info("the count is", count)
 	return videoList, count, nil
 }
+func GetVideoListByUserID(user_id int64) ([]model.Video, error) {
+	var videoList []model.Video
+	if err := utils.GetDB().Model(&model.Video{}).Where("JSON_EXTRACT(user, '$.id') = ?", user_id).Find(&videoList).Error; err != nil {
+		log.Errorf("GetVideoListByUserID err,the err is %s", err)
+		return nil, err
+	}
+	return videoList, nil
+}

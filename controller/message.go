@@ -10,15 +10,6 @@ import (
 	"time"
 )
 
-var tempChat = map[string][]model.Message{}
-
-var messageIdSequence = int64(1)
-
-type ChatResponse struct {
-	model.Response
-	MessageList []model.Message `json:"message_list"`
-}
-
 // MessageAction no practical effect, just check if token is valid
 func MessageAction(c *gin.Context) {
 	token := c.Query("token")

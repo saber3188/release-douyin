@@ -35,15 +35,21 @@ type Comment struct {
 }
 
 type User struct {
-	Id            int64     `json:"id,omitempty" gorm:"column:id;primaryKey"`
-	Name          string    `json:"name,omitempty" gorm:"column:name;index"`
-	PassWord      string    `json:"pass_word" gorm:"column:pass_word"`
-	Token         string    `json:"token" gorm:"column:token"`
-	FollowCount   int64     `json:"follow_count,omitempty" gorm:"column:follow_count"`
-	FollowerCount int64     `json:"follower_count,omitempty" gorm:"column:follower_count"`
-	IsFollow      bool      `json:"is_follow,omitempty" gorm:"column:is_follow"`
-	CreatedAt     time.Time `json:"-" gorm:"column:created_at;index"`
-	UpdatedAt     time.Time `json:"-" gorm:"column:updated_at"`
+	Id              int64     `json:"id,omitempty" gorm:"column:id;primaryKey"`
+	Name            string    `json:"name,omitempty" gorm:"column:name;index"`
+	PassWord        string    `json:"pass_word" gorm:"column:pass_word"`
+	Token           string    `json:"token" gorm:"column:token"`
+	FollowCount     int64     `json:"follow_count,omitempty" gorm:"column:follow_count"`
+	FollowerCount   int64     `json:"follower_count,omitempty" gorm:"column:follower_count"`
+	IsFollow        bool      `json:"is_follow,omitempty" gorm:"column:is_follow"`
+	Avtar           string    `json:"avatar" gorm:"column:avatar"`
+	BackgroundImage string    `json:"background_image"gorm:"column:background_image"`
+	Signature       string    `json:"signature" gorm:"signature"`
+	TotalFavorited  string    `json:"total_favorited" gorm:"column:total_favorited"`
+	WorkCount       int       `json:"work_count" gorm:"column:work_count"`
+	FavoriteCount   int       `json:"favorite_count" gorm:"column:favorite_count"`
+	CreatedAt       time.Time `json:"-" gorm:"column:created_at;index"`
+	UpdatedAt       time.Time `json:"-" gorm:"column:updated_at"`
 }
 
 type Message struct {

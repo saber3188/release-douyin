@@ -7,27 +7,21 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
 	"time"
 )
-
-type FeedRequest struct {
-	latest_time string
-	tokne       string
-}
-type FeedResponse struct {
-	model.Response
-	VideoList []model.Video `json:"video_list,omitempty"`
-	NextTime  int64         `json:"next_time,omitempty"`
-}
 
 // Feed same demo video list for every request
 func Feed(c *gin.Context) {
 	feedReq := &FeedRequest{}
-	err := c.ShouldBindQuery(feedReq)
+	feedReq.tokne = c.Query("token")
+	feedReq.latest_time = c.Query("latest_time")
+	var err error
+	log.Info(feedReq)
 	if len(feedReq.latest_time) == 0 {
-		feedReq.latest_time = time.Now().Format("2006-01-02 15:04:05")
+		feedReq.latest_time = strconv.FormatInt(time.Now().Unix(), 10)
 	}
-	log.Info("the time is %s", feedReq.latest_time)
+	log.Info("the time is ", feedReq.latest_time)
 	if err != nil {
 		c.JSON(http.StatusOK, FeedResponse{
 			Response: model.Response{StatusCode: 1, StatusMsg: err.Error()},
@@ -35,7 +29,9 @@ func Feed(c *gin.Context) {
 		log.Errorf("Feed:bind err,the err is %s", err)
 		return
 	}
-	lastTime, err := time.Parse("2006-01-02 15:04:05", feedReq.latest_time)
+	timeObj, _ := strconv.ParseInt(feedReq.latest_time, 10, 64)
+	lastTimeUnix := time.Unix(timeObj, 0)
+	lastTime, err := time.Parse("2006-01-02 15:04:05", lastTimeUnix.Format("2006-01-02 15:04:05"))
 	if err != nil {
 		c.JSON(http.StatusOK, FeedResponse{
 			Response: model.Response{StatusCode: 1, StatusMsg: err.Error()},

@@ -6,11 +6,6 @@ import (
 	"net/http"
 )
 
-type UserListResponse struct {
-	model.Response
-	UserList []model.User `json:"user_list"`
-}
-
 // RelationAction no practical effect, just check if token is valid
 func RelationAction(c *gin.Context) {
 	token := c.Query("token")

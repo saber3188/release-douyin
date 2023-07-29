@@ -10,14 +10,10 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"path/filepath"
+	"strconv"
 )
 
 const coverUrl = "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg"
-
-type VideoListResponse struct {
-	model.Response
-	VideoList []model.Video `json:"video_list"`
-}
 
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
@@ -73,10 +69,37 @@ func Publish(c *gin.Context) {
 
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
+	req := &VideoListReq{}
+	req.Token = c.Query("token")
+	req.UserID = c.Query("user_id")
+	log.Info(req)
+	userid, err := strconv.ParseInt(req.UserID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusOK, VideoListResponse{
+			Response: model.Response{
+				StatusCode: 1,
+				StatusMsg:  err.Error(),
+			},
+		})
+		log.Errorf("strconv err,the err is %s", err)
+		return
+	}
+	videoList, err := dao.GetVideoListByUserID(userid)
+	if err != nil {
+		c.JSON(http.StatusOK, VideoListResponse{
+			Response: model.Response{
+				StatusCode: 1,
+				StatusMsg:  err.Error(),
+			},
+		})
+		log.Errorf("GetVideoList err,the err is %s", err)
+		return
+	}
 	c.JSON(http.StatusOK, VideoListResponse{
 		Response: model.Response{
 			StatusCode: 0,
 		},
-		VideoList: DemoVideos,
+		VideoList: videoList,
 	})
+	log.Info("PublishList success")
 }
