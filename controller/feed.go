@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -17,10 +16,16 @@ func Feed(c *gin.Context) {
 	feedReq.tokne = c.Query("token")
 	feedReq.latest_time = c.Query("latest_time")
 	var err error
-	log.Info(feedReq)
-	if len(feedReq.latest_time) == 0 {
-		feedReq.latest_time = strconv.FormatInt(time.Now().Unix(), 10)
+	//feedReq.latest_time = strconv.FormatInt(time.Now().Unix(), 10)
+	lastTime, err := time.Parse("2006-01-02 15:04:05", time.Now().Format("2006-01-02 15:04:05"))
+	if err != nil {
+		log.Errorf("parse err,the err is %s", err)
+		c.JSON(http.StatusOK, FeedResponse{
+			Response: model.Response{StatusCode: 1, StatusMsg: err.Error()},
+		})
+		return
 	}
+	log.Info(feedReq)
 	log.Info("the time is ", feedReq.latest_time)
 	if err != nil {
 		c.JSON(http.StatusOK, FeedResponse{
@@ -29,9 +34,9 @@ func Feed(c *gin.Context) {
 		log.Errorf("Feed:bind err,the err is %s", err)
 		return
 	}
-	timeObj, _ := strconv.ParseInt(feedReq.latest_time, 10, 64)
-	lastTimeUnix := time.Unix(timeObj, 0)
-	lastTime, err := time.Parse("2006-01-02 15:04:05", lastTimeUnix.Format("2006-01-02 15:04:05"))
+	//timeObj, _ := strconv.ParseInt(feedReq.latest_time, 10, 64)
+	//lastTimeUnix := time.Unix(timeObj/1000, 0)
+	//lastTime, err := time.Parse("2006-01-02 15:04:05", lastTimeUnix.Format("2006-01-02 15:04:05"))
 	if err != nil {
 		c.JSON(http.StatusOK, FeedResponse{
 			Response: model.Response{StatusCode: 1, StatusMsg: err.Error()},

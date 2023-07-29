@@ -46,11 +46,12 @@ func UpLoadVideo(video *model.Video) error {
 func GetVediosByTime(lastTime time.Time) ([]model.Video, int64, error) {
 	var videoList []model.Video
 	var count int64
+	log.Info("lastTime:", lastTime)
 	if err := utils.GetDB().Model(&model.Video{}).Order("created_at DESC").Where("created_at<?", lastTime).Find(&videoList).Limit(30).Count(&count).Error; err != nil {
 		log.Errorf("GetVedio err,the err is %s", err)
 		return nil, 0, err
 	}
-	log.Info("the count is", count)
+	log.Info("the count is ", count)
 	return videoList, count, nil
 }
 func GetVideoListByUserID(user_id int64) ([]model.Video, error) {
@@ -60,4 +61,11 @@ func GetVideoListByUserID(user_id int64) ([]model.Video, error) {
 		return nil, err
 	}
 	return videoList, nil
+}
+func UpdateUser(user *model.User) error {
+	if err := utils.GetDB().Model(&model.User{}).Where("id=?", user.Id).Updates(*user).Error; err != nil {
+		log.Errorf("update err ,the err is %s", err)
+		return err
+	}
+	return nil
 }

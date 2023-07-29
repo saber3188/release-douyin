@@ -31,10 +31,12 @@ func Register(c *gin.Context) {
 	} else {
 		atomic.AddInt64(&userIdSequence, 1)
 		newUser := model.User{
-			Id:       userIdSequence,
-			Name:     username,
-			PassWord: password,
-			Token:    token,
+			Id:              userIdSequence,
+			Name:            username,
+			PassWord:        password,
+			Token:           token,
+			Avtar:           avatar,
+			BackgroundImage: backGroundImage,
 		}
 		if err := dao.CreateUser(&newUser); err != nil {
 			log.Errorf("register err ,the err is %s", err)

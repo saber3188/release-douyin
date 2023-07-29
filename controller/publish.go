@@ -13,7 +13,7 @@ import (
 	"strconv"
 )
 
-const coverUrl = "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg"
+const coverUrl = "http://192.168.1.27:8080/static/20210708221438_a7bee.jpg"
 
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
@@ -65,6 +65,13 @@ func Publish(c *gin.Context) {
 		StatusMsg:  FileName + " uploaded successfully",
 	})
 	log.Infof("save successfully ,the path is %s", FileName)
+	user.WorkCount += 1
+	if err = cache.SetTokenInfo(user, token); err != nil {
+		log.Errorf("cache err,the err is %s", err)
+	}
+	if err = dao.UpdateUser(user); err != nil {
+		log.Errorf("update err,the err is %s", err)
+	}
 }
 
 // PublishList all users have same publish video list
