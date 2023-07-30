@@ -96,3 +96,17 @@ func GetFavoriteVideoListByUserID(userID int64) ([]model.Video, error) {
 	}
 	return favoriteVideoList, nil
 }
+func CreatComment(comment *model.Comment) error {
+	if err := utils.GetDB().Model(&model.Comment{}).Create(comment).Error; err != nil {
+		log.Errorf("db err the err is %s", err)
+		return err
+	}
+	return nil
+}
+func DelComment(commrntID int64) error {
+	if err := utils.GetDB().Model(&model.Comment{}).Where("comment_id =?", commrntID).Delete(&model.Comment{}).Error; err != nil {
+		log.Errorf("db err the err is %s", err)
+		return err
+	}
+	return nil
+}

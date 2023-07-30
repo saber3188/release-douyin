@@ -26,12 +26,12 @@ type Video struct {
 }
 
 type Comment struct {
-	Id         int64     `json:"id,omitempty" gorm:"column:id;primaryKey"`
-	User       User      `json:"user" gorm:"embedded"`
-	Content    string    `json:"content,omitempty" gorm:"column:content"`
-	CreateDate string    `json:"create_date,omitempty" gorm:"column:create_date"`
-	CreatedAt  time.Time `json:"-" gorm:"column:created_at"`
-	UpdatedAt  time.Time `json:"-" gorm:"column:updated_at"`
+	ID        int64     `json:"id" gorm:"column:id;primaryKey;AUTO_INCREMENT"`
+	User      User      `json:"user" gorm:"column:user"`
+	VideoID   int64     `json:"video_id" gorm:"column:video_id"`
+	Content   string    `json:"content,omitempty" gorm:"column:content"`
+	CreatedAt time.Time `json:"create_date" gorm:"column:created_at"`
+	UpdatedAt time.Time `json:"-" gorm:"column:updated_at"`
 }
 
 type User struct {
