@@ -69,3 +69,30 @@ func UpdateUser(user *model.User) error {
 	}
 	return nil
 }
+func CreatFavorite(userId, videoId int64) error {
+	favorite := &model.Favorite{
+		UserId:  userId,
+		VideoID: videoId,
+	}
+	if err := utils.GetDB().Model(&model.Favorite{}).Create(favorite).Error; err != nil {
+		log.Errorf("Creat err the err is %s", err)
+		return err
+	}
+	return nil
+}
+func DelFavorite(userID, videoID int64) error {
+	if err := utils.GetDB().Model(&model.Favorite{}).Where("user_id=? AND video_id=?", userID, videoID).Delete(&model.Favorite{}).Error; err != nil {
+		log.Errorf("Del err the err is %s", err)
+		return err
+	}
+	return nil
+}
+func GetFavoriteVideoListByUserID(userID int64) ([]model.Video, error) {
+	subquery := utils.GetDB().Model(&model.Favorite{}).Select("video_id").Where("user_id = ?", userID)
+	var favoriteVideoList []model.Video
+	if err := utils.GetDB().Model(&model.Video{}).Where("id IN (?)", subquery).Find(&favoriteVideoList).Error; err != nil {
+		log.Errorf("db err the err is %s", err)
+		return nil, err
+	}
+	return favoriteVideoList, nil
+}
