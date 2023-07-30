@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/RaymondCode/simple-demo/internal/dao"
 	"github.com/RaymondCode/simple-demo/internal/model"
+	"github.com/RaymondCode/simple-demo/utils"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"time"
 )
 
 // Feed same demo video list for every request
@@ -15,18 +15,26 @@ func Feed(c *gin.Context) {
 	feedReq := &FeedRequest{}
 	feedReq.tokne = c.Query("token")
 	feedReq.latest_time = c.Query("latest_time")
-	var err error
-	//feedReq.latest_time = strconv.FormatInt(time.Now().Unix(), 10)
-	lastTime, err := time.Parse("2006-01-02 15:04:05", time.Now().Format("2006-01-02 15:04:05"))
+	log.Info("query time is ", feedReq.latest_time)
+	//var err error
+	////feedReq.latest_time = strconv.FormatInt(time.Now().Unix(), 10)
+	//lastTime, err := time.Parse("2006-01-02 15:04:05", time.Now().Format("2006-01-02 15:04:05"))
+	//if err != nil {
+	//	log.Errorf("parse err,the err is %s", err)
+	//	c.JSON(http.StatusOK, FeedResponse{
+	//		Response: model.Response{StatusCode: 1, StatusMsg: err.Error()},
+	//	})
+	//	return
+	//}
+	lastTime, err := utils.StringToTime(feedReq.latest_time)
 	if err != nil {
-		log.Errorf("parse err,the err is %s", err)
+		log.Errorf("utils err the err is %s", err)
 		c.JSON(http.StatusOK, FeedResponse{
 			Response: model.Response{StatusCode: 1, StatusMsg: err.Error()},
 		})
-		return
 	}
 	log.Info(feedReq)
-	log.Info("the time is ", feedReq.latest_time)
+	log.Info("the time is ", lastTime)
 	if err != nil {
 		c.JSON(http.StatusOK, FeedResponse{
 			Response: model.Response{StatusCode: 1, StatusMsg: err.Error()},

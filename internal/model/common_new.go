@@ -74,6 +74,10 @@ type MessagePushEvent struct {
 	CreatedAt  time.Time `json:"-" gorm:"column:created_at"`
 	UpdatedAt  time.Time `json:"-" gorm:"column:updated_at"`
 }
+type Favorite struct {
+	UserId  int64 `json:"user_id" gorm:"column:user_id;primaryKey"`
+	VideoID int64 `json:"video_id" gorm:"column:video_id;primaryKey""`
+}
 
 func (u User) Value() (driver.Value, error) {
 	// 这里我们将整个结构体转换成 JSON 格式存入数据库

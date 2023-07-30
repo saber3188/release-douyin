@@ -65,3 +65,8 @@ type VideoListReq struct {
 	Token  string `json:"token"`
 	UserID string `json:"user_id"`
 }
+type FavoriteReq struct {
+	Token      string `form:"token"`
+	VideoID    string `form:"video_id"`
+	ActionType string `form:"action_type"`
+}
