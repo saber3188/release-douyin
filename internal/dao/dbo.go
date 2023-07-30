@@ -110,3 +110,11 @@ func DelComment(commrntID int64) error {
 	}
 	return nil
 }
+func GetCommentList(videoID int64) ([]model.Comment, error) {
+	var commentList []model.Comment
+	if err := utils.GetDB().Model(&model.Comment{}).Order("created_at DESC").Where("video_id=?", videoID).Find(&commentList).Error; err != nil {
+		log.Errorf("db err the err is %s", err)
+		return nil, err
+	}
+	return commentList, nil
+}

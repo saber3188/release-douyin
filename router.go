@@ -5,6 +5,7 @@ import (
 	"github.com/RaymondCode/simple-demo/internal/cache"
 	"github.com/RaymondCode/simple-demo/internal/model"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -13,7 +14,6 @@ func initRouter(r *gin.Engine) {
 	r.Static("/static", "./public")
 	r.GET("/douyin//feed/", controller.Feed)
 	apiRouter := r.Group("/douyin")
-	apiRouter.Use(AuthMiddleWare())
 
 	// basic apis
 	apiRouter.GET("/user/", controller.UserInfo)
@@ -41,9 +41,11 @@ func AuthMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.Query("token")
 		if user, _ := cache.GetTokenInfo(token); user != nil && user.Token == token {
+			log.Info("用户已验证")
 			c.Next()
 			return
 		}
+		log.Errorf("用户未验证")
 		c.JSON(http.StatusUnauthorized, model.Response{
 			StatusCode: 1,
 			StatusMsg:  "用户未验证",

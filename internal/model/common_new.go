@@ -26,22 +26,23 @@ type Video struct {
 }
 
 type Comment struct {
-	ID        int64     `json:"id" gorm:"column:id;primaryKey;AUTO_INCREMENT"`
+	ID        int64     `json:"id" gorm:"column:id"`
 	User      User      `json:"user" gorm:"column:user"`
 	VideoID   int64     `json:"video_id" gorm:"column:video_id"`
-	Content   string    `json:"content,omitempty" gorm:"column:content"`
-	CreatedAt time.Time `json:"create_date" gorm:"column:created_at"`
+	Content   string    `json:"content" gorm:"column:content"`
+	CreatDate string    `json:"create_date" gorm:"creat_date"`
+	CreatedAt time.Time `json:"-" gorm:"column:created_at"`
 	UpdatedAt time.Time `json:"-" gorm:"column:updated_at"`
 }
 
 type User struct {
-	Id              int64     `json:"id,omitempty" gorm:"column:id;primaryKey"`
-	Name            string    `json:"name,omitempty" gorm:"column:name;index"`
+	Id              int64     `json:"id" gorm:"column:id;primaryKey"`
+	Name            string    `json:"name" gorm:"column:name;index"`
 	PassWord        string    `json:"pass_word" gorm:"column:pass_word"`
 	Token           string    `json:"token" gorm:"column:token"`
-	FollowCount     int64     `json:"follow_count,omitempty" gorm:"column:follow_count"`
-	FollowerCount   int64     `json:"follower_count,omitempty" gorm:"column:follower_count"`
-	IsFollow        bool      `json:"is_follow,omitempty" gorm:"column:is_follow"`
+	FollowCount     int64     `json:"follow_count" gorm:"column:follow_count"`
+	FollowerCount   int64     `json:"follower_count" gorm:"column:follower_count"`
+	IsFollow        bool      `json:"is_follow" gorm:"column:is_follow"`
 	Avtar           string    `json:"avatar" gorm:"column:avatar"`
 	BackgroundImage string    `json:"background_image"gorm:"column:background_image"`
 	Signature       string    `json:"signature" gorm:"signature"`
