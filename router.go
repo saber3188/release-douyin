@@ -13,12 +13,12 @@ func initRouter(r *gin.Engine) {
 	// public directory is used to serve static resources
 	r.Static("/static", "./public")
 	r.GET("/douyin//feed/", controller.Feed)
+	r.POST("/douyin//user/register/", controller.Register)
+	r.POST("/douyin//user/login/", controller.Login)
 	apiRouter := r.Group("/douyin")
-
+	apiRouter.Use(AuthMiddleWare())
 	// basic apis
 	apiRouter.GET("/user/", controller.UserInfo)
-	apiRouter.POST("/user/register/", controller.Register)
-	apiRouter.POST("/user/login/", controller.Login)
 	apiRouter.POST("/publish/action/", controller.Publish)
 	apiRouter.GET("/publish/list/", controller.PublishList)
 
