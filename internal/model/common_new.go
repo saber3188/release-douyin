@@ -36,21 +36,22 @@ type Comment struct {
 }
 
 type User struct {
-	Id              int64     `json:"id" gorm:"column:id;primaryKey"`
-	Name            string    `json:"name" gorm:"column:name;index"`
-	PassWord        string    `json:"pass_word" gorm:"column:pass_word"`
-	Token           string    `json:"token" gorm:"column:token"`
-	FollowCount     int64     `json:"follow_count" gorm:"column:follow_count"`
-	FollowerCount   int64     `json:"follower_count" gorm:"column:follower_count"`
-	IsFollow        bool      `json:"is_follow" gorm:"column:is_follow"`
-	Avtar           string    `json:"avatar" gorm:"column:avatar"`
-	BackgroundImage string    `json:"background_image"gorm:"column:background_image"`
-	Signature       string    `json:"signature" gorm:"signature"`
-	TotalFavorited  string    `json:"total_favorited" gorm:"column:total_favorited"`
-	WorkCount       int       `json:"work_count" gorm:"column:work_count"`
-	FavoriteCount   int       `json:"favorite_count" gorm:"column:favorite_count"`
-	CreatedAt       time.Time `json:"-" gorm:"column:created_at;index"`
-	UpdatedAt       time.Time `json:"-" gorm:"column:updated_at"`
+	Id              int64  `json:"id" gorm:"column:id;primaryKey"`
+	Name            string `json:"name" gorm:"column:name;index"`
+	PassWord        string `json:"pass_word" gorm:"column:pass_word"`
+	Token           string `json:"token" gorm:"column:token"`
+	FollowCount     int64  `json:"follow_count" gorm:"column:follow_count"`
+	FollowerCount   int64  `json:"follower_count" gorm:"column:follower_count"`
+	IsFollow        bool   `json:"is_follow" gorm:"column:is_follow"`
+	Avtar           string `json:"avatar" gorm:"column:avatar"`
+	BackgroundImage string `json:"background_image"gorm:"column:background_image"`
+	Signature       string `json:"signature" gorm:"signature"`
+	//TotalFavorited  string    `json:"total_favorited" gorm:"column:total_favorited"`
+	Sum           string    `json:"total_favorited"`
+	WorkCount     int       `json:"work_count" gorm:"column:work_count"`
+	FavoriteCount int       `json:"favorite_count" gorm:"column:favorite_count"`
+	CreatedAt     time.Time `json:"-" gorm:"column:created_at;index"`
+	UpdatedAt     time.Time `json:"-" gorm:"column:updated_at"`
 }
 
 type Message struct {
@@ -78,6 +79,10 @@ type MessagePushEvent struct {
 type Favorite struct {
 	UserId  int64 `json:"user_id" gorm:"column:user_id;primaryKey"`
 	VideoID int64 `json:"video_id" gorm:"column:video_id;primaryKey""`
+}
+type Relation struct {
+	ID         int64 `json:"id" gorm:"column:id"`
+	FollowerID int64 `json:"follower_id" gorm:"follower_id"`
 }
 
 func (u User) Value() (driver.Value, error) {

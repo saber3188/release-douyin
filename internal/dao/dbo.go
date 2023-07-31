@@ -14,10 +14,10 @@ func GetUserByName(name string) (*model.User, error) {
 	user := &model.User{}
 	sqlDB := utils.GetDB()
 	if sqlDB == nil {
-		log.Info("get DB connect fail")
+		log.Errorf("get DB connect fail")
 		return nil, fmt.Errorf("get DB connect fail")
 	}
-	if err := sqlDB.Model(model.User{}).Where("name=?", name).First(user).Error; err != nil {
+	if err := sqlDB.Model(&model.User{}).Where("name=?", name).First(user).Error; err != nil {
 		if err.Error() == gorm.ErrRecordNotFound.Error() {
 			return nil, nil
 		}
@@ -117,4 +117,36 @@ func GetCommentList(videoID int64) ([]model.Comment, error) {
 		return nil, err
 	}
 	return commentList, nil
+}
+func CreatRelation(relation *model.Relation) error {
+	if err := utils.GetDB().Model(&model.Relation{}).Create(relation).Error; err != nil {
+		log.Errorf("db err the err is %s", err)
+		return err
+	}
+	return nil
+}
+func DelRelation(relation *model.Relation) error {
+	if err := utils.GetDB().Model(&model.Relation{}).Where("id = ? AND follower_id = ?", relation.ID, relation.FollowerID).Error; err != nil {
+		log.Errorf("db err the err is %s", err)
+		return err
+	}
+	return nil
+}
+func GetFollowerList(userID int64) ([]model.User, error) {
+	var followerList []model.User
+	subquery := utils.GetDB().Model(&model.Relation{}).Select("follower_id").Where("id=?", userID)
+	if err := utils.GetDB().Model(&model.User{}).Where("id IN (?)", subquery).Find(&followerList).Error; err != nil {
+		log.Errorf("db err the err is %s", err)
+		return nil, err
+	}
+	return followerList, nil
+}
+func GetFollowList(userID int64) ([]model.User, error) {
+	var attentionList []model.User
+	subquery := utils.GetDB().Model(&model.Relation{}).Select("id").Where("follower_id=?", userID)
+	if err := utils.GetDB().Model(&model.User{}).Where("id IN (?)", subquery).Find(&attentionList).Error; err != nil {
+		log.Errorf("db err the err is %s", err)
+		return nil, err
+	}
+	return attentionList, nil
 }

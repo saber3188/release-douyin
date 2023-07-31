@@ -40,7 +40,7 @@ var usersLoginInfo = map[string]model.User{
 	},
 }
 
-var userIdSequence = int64(1)
+/*var userIdSequence = int64(1)
 
 type UserLoginResponse struct {
 	model.Response
@@ -51,7 +51,7 @@ type UserLoginResponse struct {
 type UserResponse struct {
 	model.Response
 	User model.User `json:"user"`
-}
+}*/
 
 var tempChat = map[string][]model.Message{}
 
@@ -73,4 +73,9 @@ type FavoriteReq struct {
 type FavoriteListReq struct {
 	UserID string `form:"user_id"`
 	Token  string `form:"token"`
+}
+type RelationReq struct {
+	Token      string `form:"token"`
+	ToUserID   string `form:"to_user_id"`
+	ActionType string `form:"action_type"`
 }

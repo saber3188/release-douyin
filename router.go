@@ -12,13 +12,16 @@ import (
 func initRouter(r *gin.Engine) {
 	// public directory is used to serve static resources
 	r.Static("/static", "./public")
-	r.GET("/douyin//feed/", controller.Feed)
-	r.POST("/douyin//user/register/", controller.Register)
-	r.POST("/douyin//user/login/", controller.Login)
+	//basicRoute := r.Group("/douyin")
 	apiRouter := r.Group("/douyin")
-	apiRouter.Use(AuthMiddleWare())
-	// basic apis
+	apiRouter.GET("/feed/", controller.Feed)
+	apiRouter.POST("/user/register/", controller.Register)
+	apiRouter.POST("/user/login/", controller.Login)
+	apiRouter.GET("/comment/list/", controller.CommentList)
 	apiRouter.GET("/user/", controller.UserInfo)
+
+	//apiRouter.Use(AuthMiddleWare())
+	// basic apis
 	apiRouter.POST("/publish/action/", controller.Publish)
 	apiRouter.GET("/publish/list/", controller.PublishList)
 
@@ -26,7 +29,6 @@ func initRouter(r *gin.Engine) {
 	apiRouter.POST("/favorite/action/", controller.FavoriteAction)
 	apiRouter.GET("/favorite/list/", controller.FavoriteList)
 	apiRouter.POST("/comment/action/", controller.CommentAction)
-	apiRouter.GET("/comment/list/", controller.CommentList)
 
 	// extra apis - II
 	apiRouter.POST("/relation/action/", controller.RelationAction)
@@ -35,7 +37,6 @@ func initRouter(r *gin.Engine) {
 	apiRouter.GET("/relation/friend/list/", controller.FriendList)
 	apiRouter.GET("/message/chat/", controller.MessageChat)
 	apiRouter.POST("/message/action/", controller.MessageAction)
-	//static file
 }
 func AuthMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {

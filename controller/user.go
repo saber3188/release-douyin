@@ -10,6 +10,23 @@ import (
 	"sync/atomic"
 )
 
+// usersLoginInfo use map to store user info, and key is username+password for demo
+// user data will be cleared every time the server starts
+// test data: username=zhanglei, password=douyin
+
+var userIdSequence = int64(1)
+
+type UserLoginResponse struct {
+	model.Response
+	UserId int64  `json:"user_id,omitempty"`
+	Token  string `json:"token"`
+}
+
+type UserResponse struct {
+	model.Response
+	User model.User `json:"user"`
+}
+
 func Register(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
@@ -31,12 +48,10 @@ func Register(c *gin.Context) {
 	} else {
 		atomic.AddInt64(&userIdSequence, 1)
 		newUser := model.User{
-			Id:              userIdSequence,
-			Name:            username,
-			PassWord:        password,
-			Token:           token,
-			Avtar:           avatar,
-			BackgroundImage: backGroundImage,
+			//Id:       userIdSequence,
+			Name:     username,
+			PassWord: password,
+			Token:    token,
 		}
 		if err := dao.CreateUser(&newUser); err != nil {
 			log.Errorf("register err ,the err is %s", err)

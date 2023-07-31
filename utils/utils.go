@@ -38,5 +38,12 @@ func StringToTime(timeObj string) (time.Time, error) {
 	}
 	timeUnix := time.Unix(timer, 0).Format("2006-01-02 15:04:05")
 	return time.Parse("2006-01-02 15:04:05", timeUnix)
-
+}
+func StringToInt64(ans string) (int64, error) {
+	target, err := strconv.ParseInt(ans, 10, 64)
+	if err != nil {
+		log.Errorf("parse err the err is %s", err)
+		return 0, err
+	}
+	return target, nil
 }

@@ -10,7 +10,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"path/filepath"
-	"strconv"
 )
 
 const coverUrl = "http://192.168.1.27:8080/static/20210708221438_a7bee.jpg"
@@ -65,7 +64,7 @@ func Publish(c *gin.Context) {
 		StatusMsg:  FileName + " uploaded successfully",
 	})
 	log.Infof("save successfully ,the path is %s", FileName)
-	user.WorkCount += 1
+	//user.WorkCount += 1
 	if err = cache.SetTokenInfo(user, token); err != nil {
 		log.Errorf("cache err,the err is %s", err)
 	}
@@ -76,7 +75,7 @@ func Publish(c *gin.Context) {
 
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
-	req := &VideoListReq{}
+	/*req := &VideoListReq{}
 	req.Token = c.Query("token")
 	req.UserID = c.Query("user_id")
 	log.Info(req)
@@ -108,5 +107,10 @@ func PublishList(c *gin.Context) {
 		},
 		VideoList: videoList,
 	})
-	log.Info("PublishList success")
+	log.Info("PublishList success")*/
+	c.JSON(http.StatusOK, VideoListResponse{
+		Response: model.Response{
+			StatusCode: 0,
+		},
+	})
 }
